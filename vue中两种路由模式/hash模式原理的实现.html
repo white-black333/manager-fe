@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="btn">修改hash值</button>
+
+    <script>
+        const btn = document.getElementById('btn');
+
+        // Window: hashchange event:
+        // 当 URL 的片段标识符更改时，将触发hashchange事件  (跟在＃符号后面的 URL 部分，包括＃符号)
+        window.onhashchange = (e) => {
+            console.log('旧的URL', e.oldURL);
+            console.log('新的URL', e.newURL);
+
+            console.log('hash： ', location.hash);
+        }
+
+        // 当纯 HTML 被完全加载以及解析时，DOMContentLoaded 事件会被触发而不必等待样式表，图片或者子框架完成加载。
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log(location.hash);
+
+        });
+
+
+        btn.addEventListener('click', (eve) => {
+            location.hash = '#/user';
+        });
+
+
+        /*
+        window.location.href     → 'https://www.jianshu.com/search?q=JS#comments'
+        .origin                  → 'https://www.jianshu.com'
+        .protocol                → 'https:'
+        .host                    → 'www.jianshu.com'
+        .hostname                → 'www.jianshu.com'
+        .port                    → ''
+        .pathname                → '/search/'
+        .search                  → '?q=JS'
+        .hash                    → '#comments' */
+
+    </script>
+</body>
+
+</html>
