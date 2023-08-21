@@ -1,12 +1,6 @@
 <script>
 export default {
   name: 'App',
-  mounted() {
-    console.log(this.$storage);
-    this.$storage.setItem('hcp', { age: 12, sex: 'man' });
-    this.$storage.removeItem('hcp');
-    this.$storage.clearAll();
-  }
 }
 
 </script>
@@ -15,4 +9,8 @@ export default {
   <router-view></router-view>
 </template>
 
-<style ></style>
+<style lang="scss">
+/* @import css 语法，引入类样式； import xxx from xx es6语法，引入模块 */
+@import './assets/style/reset.css';
+@import './assets/style/index.scss';
+</style>

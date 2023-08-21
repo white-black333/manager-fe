@@ -1,7 +1,7 @@
 <script >
 export default {
   name: 'Welcome',
-}
+};
 </script>
 
 <template>
@@ -12,4 +12,7 @@ export default {
   </div>
 </template>
 
-<style ></style>
+<style lang="scss"></style>
+
+
+
