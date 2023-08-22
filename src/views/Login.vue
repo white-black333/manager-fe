@@ -1,43 +1,35 @@
 <script>
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 export default {
   name: 'Login',
-  methods: {
-    goHome() {
-      this.$router.push('/welcome');
-    },
-  },
-  mounted() {
-    // request调用 写法一：
-    /* request({
-  method: 'get',
-  url: '/login',
-  data: {
-    name:'jack'
-  }
-}).then((res) => {
-  console.log(res);
-}) */
-
-    // 写法二:  options作为技术的扩展
-    this.$request.get('/login', { name: "jack" }, { mock: true, loading: true }).then((res) => {
-      console.log(res);
-    });
-  }
-
-
-  // vue3 路由跳转写法
-  /*   setup() {
-      // 因为我们在 setup 里面没有访问 this，所以我们不能再直接访问 this.$router 或 this.$route。
-      const router = useRouter();//通过useRouter()函数访问router路由对象
-      const goHome = () => {
-        router.push('/welcome')
-      };
-      return {
-        goHome,
+  data() {
+    return {
+      user: {
+        userName: '',
+        userPwd: ''
+      },
+      rules: {
+        userName: { required: true, message: '请输入用户名', trigger: 'blur' },
+        userPwd: { required: true, message: '请输入密码', trigger: 'blur' }
       }
-    }, */
+    };
+  },
+  methods: {
+    login() {
+      // validate()	对整个表单的内容进行验证。 接收一个回调函数，或返回 Promise。
+      this.$refs.userForm.validate((valid) => {
+        if (valid) {
+          this.$api.login(this.user).then((res) => {
+            this.$store.commit('saveUserInfo', res);
+            this.$router.push('/welcome');
+          });
+        } else {
+          return false;
+        }
+      });
+
+    }
+  },
+
 };
 </script>
 
@@ -45,20 +37,18 @@ export default {
   <div class="login-wrapper">
     <div class="modal">
       <div class="title">火星</div>
-      <el-form>
-        <el-form-item>
-          <el-input type="text" value="admin" prefix-icon="User" suffix-icon="CircleCheck" />
+      <el-form ref="userForm" :model="user" :rules="rules" status-icon>
+        <el-form-item prop="userName">
+          <el-input ref="userName" type="text" v-model="user.userName" prefix-icon="User" />
+        </el-form-item>
+        <el-form-item prop="userPwd">
+          <el-input show-password type="password" v-model="user.userPwd" prefix-icon="Lock" />
         </el-form-item>
         <el-form-item>
-          <el-input show-password type="password" value="111111" prefix-icon="View" suffix-icon="CircleCheck" />
-        </el-form-item>
-        <el-form-item>
-          <el-button class="btn-login" type="primary">登录</el-button><!-- type指定按钮的el样式  -->
+          <el-button class="btn-login" type="primary" @click="login">登录</el-button><!-- type指定按钮的el样式  -->
         </el-form-item>
       </el-form>
     </div>
-    <!-- <h3>欢迎来到登录界面</h3>
-    <el-button @click="goHome">回首页</el-button> -->
   </div>
 </template>
 

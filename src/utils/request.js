@@ -56,6 +56,10 @@ function request(options) {
         options.params = options.data;  // `params` 是与get请求一起发送的 URL 参数
     }
 
+    // 局部mock设置
+    if (typeof options.mock != 'undefined') {
+        config.mock = options.mock;
+    }
     // 项目上线时
     if (config.env === 'prod') {
         // 网络请求 设置axios的baseURL 为上线接口，防止其使用mock接口数据，出现错误
