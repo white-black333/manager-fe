@@ -1,7 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from './../components/Home.vue';
-import Welcome from './../components/Welcome.vue';
-import Login from './../components/Login.vue';
 
 // 配置路由规则数组routes
 const routes = [
@@ -20,20 +18,19 @@ const routes = [
                 meta: {
                     title: '欢迎页'
                 },
-                component: Welcome,
-
-            },
-            {
-                name: 'Login',
-                path: '/login',
-                meta: {
-                    title: '登录'
-                },
-                component: Login,
+                component: () => import('../views/Welcome.vue'),
 
             }
         ]
 
+    },
+    {
+        name: 'Login',
+        path: '/login',
+        meta: {
+            title: '登录'
+        },
+        component: () => import('../views/Login.vue'),
 
     }
 ];
