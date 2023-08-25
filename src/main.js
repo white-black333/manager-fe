@@ -31,3 +31,46 @@ for (const iconName in ElementPlusIconsVue) {
 }
 
 app.use(router).use(ElementPlus).use(store).mount('#app');
+
+
+
+
+
+manager - fe;
+dist;
+
+node_modules;
+
+public;
+
+src;
+
+api;
+
+assets;
+
+components;
+
+config;
+
+router;
+
+store;
+
+utils;
+
+views;
+
+App.vue;
+
+main.js
+
+    .gitignore
+
+    .env.dev
+
+    .env.test
+
+    .env.prod;
+
+index.html;
