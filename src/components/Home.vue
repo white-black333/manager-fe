@@ -1,16 +1,100 @@
 <script >
+import TreeMenu from './TreeMenu.vue';
+import BreadCrumb from './BreadCrumb.vue';
 export default {
-  name: 'Home'
+  name: 'Home',
+  components: { TreeMenu, BreadCrumb },
+  data() {
+    return {
+      isCollapse: false,
+      noticeCount: false,
+      userMenu: [],
+    };
+  },
+  computed: {
+    userInfo() {
+      return this.$store.state.userInfo;
+    },
+    activeMenu() {
+      return location.hash.slice(-1);
+    }
+  },
+  mounted() {
+    this.getNoticeCount();
+    this.getMenuList();
+  },
+  methods: {
+    handleLogout(key) {
+      if (key == 'email') return;
+      this.$store.commit('saveUserInfo', '');
+      this.$router.push('/login');
+      this.$storage.removeItem('userInfo');
+
+    },
+    toggle() {
+      this.isCollapse = !this.isCollapse;
+    },
+
+    async getNoticeCount() {
+      try {
+        const count = await this.$api.noticeCount();
+        this.noticeCount = !!count;
+      }
+      catch (error) { console.error(error); }
+    },
+    async getMenuList() {
+      try {
+        const userMenu = await this.$api.menuList();
+        this.userMenu = userMenu;
+        console.log(userMenu);
+      }
+      catch (error) { console.error(error); }
+    },
+  }
+
+
 };
 </script>
 
 <template>
   <div class="basic-layout">
-    <div class="nav-side"></div>
-    <div class="content-right">
+    <div :class="['nav-side', isCollapse ? 'fold' : 'unfold']">
+      <div class="menu-logo">
+        <img src="../assets/logo.png" alt="menu-logo">
+        <span>Manager</span>
+      </div>
+      <el-menu :default-active="activeMenu" class="menu-content" background-color="#001529" text-color="#fff" router
+        :collapse="isCollapse">
+        <TreeMenu :userMenu="userMenu" />
+      </el-menu>
+    </div>
+    <div :class="['content-right', isCollapse ? 'fold' : 'unfold']">
       <div class="nav-top">
-        <div class="bread">面包屑</div>
-        <div class="userInfo">用户</div>
+        <div class="nav-left">
+          <el-icon class="icon-fold" @click="toggle">
+            <Fold />
+          </el-icon>
+          <BreadCrumb />
+        </div>
+        <div class="userInfo">
+          <el-badge class="notice" :is-dot="noticeCount">
+            <el-icon class="notice-icon">
+              <Bell />
+            </el-icon>
+          </el-badge>
+          <!-- command是自定义事件 -->
+          <el-dropdown @command="handleLogout" class="dropdown">
+            <span class="dropdown-link">
+              {{ userInfo.userName }}
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="email">邮箱：{{ userInfo.userEmail }}</el-dropdown-item>
+                <el-dropdown-item command="quit">退出</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
       </div>
       <div class="wrapper">
         <router-view class="main-page"></router-view>
@@ -31,6 +115,33 @@ export default {
     color: #fff;
     overflow-y: auto; // 如果内容溢出，则浏览器提供纵向滚动条。
     transition: width .5s; // 左侧菜单栏宽度变化时的过渡效果
+
+    .menu-logo {
+      display: flex;
+      align-items: center;
+      height: 50px;
+
+      img {
+        width: 32px;
+        margin: 16px;
+      }
+
+    }
+
+    .menu-content {
+      border-right: none;
+      height: calc(100vh - 50px);
+
+    }
+
+    // &指 .nav-side
+    &.fold {
+      width: 64px;
+    }
+
+    &.unfold {
+      width: 200px;
+    }
   }
 
   .content-right {
@@ -43,6 +154,46 @@ export default {
       justify-content: space-between;
       border-bottom: 1px solid #ddd;
       padding: 0 20px;
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+
+        .icon-fold {
+          margin-right: 10px;
+        }
+      }
+
+      .userInfo {
+
+        .notice {
+          /* height设置元素自身的高度，line-height设置子元素的高度 */
+          line-height: 30px; //line-height指定匿名行内框的最小高度
+          margin-right: 15px;
+          ;
+        }
+
+        .dropdown {
+          height: 49px;
+          line-height: 49px;
+
+          .dropdown-link {
+            // line-height: 4;
+            color: #409eff;
+            cursor: pointer;
+
+            // &连体符 表示元素本身
+            &:hover,
+            &:active,
+            &:focus {
+              outline: none;
+            }
+          }
+
+        }
+
+      }
+
     }
 
     .wrapper {
@@ -53,6 +204,15 @@ export default {
         background-color: #fff;
         height: calc(100vh - 90px); //怪异盒模型 height已经包含了自身的padding，boder
       }
+    }
+
+    &.fold {
+      margin-left: 64px;
+
+    }
+
+    &.unfold {
+      margin-left: 200x;
     }
   }
 }

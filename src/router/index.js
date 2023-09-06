@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import Home from './../components/Home.vue';
-
+import Home from '@/components/Home.vue';
+import storage from '../utils/storage';
 // 配置路由规则数组routes
 const routes = [
     {
@@ -20,6 +20,35 @@ const routes = [
                 },
                 component: () => import('../views/Welcome.vue'),
 
+            },
+            {
+                name: 'vue',
+                path: 'vue',
+                meta: {
+                    title: 'vue'
+                },
+                component: () => import('../views/Welcome.vue'),
+                children: [
+                    {
+                        name: 'vite',
+                        path: 'vite', //子路由共用父路由路径，不要叫‘/’
+                        meta: {
+                            title: 'vite'
+                        },
+                        component: () => import('../views/Welcome.vue'),
+                        children: [
+                            {
+                                name: 'elplus',
+                                path: 'elplus', //子路由共用父路由路径，不要叫‘/’
+                                meta: {
+                                    title: 'elplus'
+                                },
+                                component: () => import('../views/Welcome.vue'),
+
+                            }
+                        ]
+                    }
+                ]
             }
         ]
 

@@ -12,5 +12,22 @@ export default {
             data: params,
             // mock: false// 局部mock设置
         });
+    },
+    noticeCount() {
+        return request({
+            method: 'get',
+            url: '/leave/count',
+            data: {}
+        });
+    },
+    menuList() {
+        return request({
+            method: 'post',
+            url: '/menu/list',
+            data: {
+                // menuName: "系统管理",
+                // menuState: 1
+            }
+        });
     }
 };
