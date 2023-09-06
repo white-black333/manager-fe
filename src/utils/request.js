@@ -6,13 +6,14 @@ import config from "../config";
 type:'success' | 'warning' | 'info' | 'error',每个type也是一个方法*/
 import { ElMessage } from 'element-plus';//单独引入Message。此时调用方法为 ElMessage()
 import router from "../router";
+import storage from './storage';
 
 const TOKEN_INVALID = '登录过期，请重新登录';
 const NTEWORK_ERROR = '网络异常，请稍后再试';
 
 // 创建axios实例对象，添加全局请求配置
 const service = axios.create({
-    baseURL: config.baseURL,   // `baseURL` 将自动加在 `url` 前面
+    baseURL: config.baseApi,   // `baseURL` 将自动加在 `url` 前面
     timeout: 1000,// `timeout` 指定请求超时的毫秒数。如果请求时间超过 `timeout` 的值，则请求会被中断
 });
 
@@ -20,7 +21,10 @@ const service = axios.create({
 service.interceptors.request.use((req) => {
     // 在发送请求之前添加认证头
     const headers = req.headers;
-    if (!headers.Authorization) headers.Authorization = "Bearer  Jack";
+    if (!headers.Authorization) {
+        const { token = "" } = storage.getItem('userInfo') || {};
+        headers.Authorization = "Bearer " + token;
+    };
     return req;
 },
     // 拦截失败
@@ -30,11 +34,11 @@ service.interceptors.request.use((req) => {
 
 // 响应拦截
 service.interceptors.response.use((res) => {
-    console.log(res);//返回的res有config,data,headers,request,status,statusText属性
+    // console.log(res);//返回的res有config,data,headers,request,status,statusText属性
     const { code, data, msg } = res.data;//res.data是返回的json对象
     if (code === 200) {
         return data;
-    } else if (code = 40001) {
+    } else if (code === 40001) {
         // 页面弹窗，提示用户错误信息
         ElMessage.error(TOKEN_INVALID);
         setTimeout(() => {
@@ -44,7 +48,7 @@ service.interceptors.response.use((res) => {
         return Promise.reject(TOKEN_INVALID);
     } else {
         ElMessage.error(msg || NTEWORK_ERROR);
-        return Promise.error(msg || NTEWORK_ERRORv);
+        return Promise.reject(msg || NTEWORK_ERROR);
     }
 });
 
