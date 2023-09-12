@@ -17,17 +17,56 @@ export default {
         return request({
             method: 'get',
             url: '/leave/count',
-            data: {}
+            data: {},
+            mock: true
         });
     },
-    menuList() {
+    getmenuList() {
         return request({
             method: 'post',
             url: '/menu/list',
             data: {
                 // menuName: "系统管理",
                 // menuState: 1
-            }
+            },
+            mock: true
         });
-    }
+    },
+    getUserList(params) {
+        return request({
+            method: 'get',
+            url: '/users/list',
+            data: params,
+        });
+    },
+    userDel(params) {
+        return request({
+            method: 'post',
+            url: '/users/delete',
+            data: params,
+        });
+    },
+    getRoleList(params) {
+        return request({
+            method: 'get',
+            url: '/roles/allList',
+            data: params,
+            mock: true
+        });
+    },
+    getDeptList(params) {
+        return request({
+            method: 'get',
+            url: '/dept/list',
+            data: params,
+            mock: true
+        });
+    },
+    submitUser(params) {
+        return request({
+            method: 'post',
+            url: '/users/operate',
+            data: params,
+        });
+    },
 };

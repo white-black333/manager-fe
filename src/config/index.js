@@ -19,7 +19,7 @@ const EnvConfig = {
 };
 export default {
     env,
-    mock: true,
+    mock: false,
     ...EnvConfig[env],
     nameSpace: 'manager', // Storage的命名空间
 }; 

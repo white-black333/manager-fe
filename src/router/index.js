@@ -22,33 +22,13 @@ const routes = [
 
             },
             {
-                name: 'vue',
-                path: 'vue',
+                name: 'user',
+                path: '/system/user',
                 meta: {
-                    title: 'vue'
+                    title: '用户管理'
                 },
-                component: () => import('../views/Welcome.vue'),
-                children: [
-                    {
-                        name: 'vite',
-                        path: 'vite', //子路由共用父路由路径，不要叫‘/’
-                        meta: {
-                            title: 'vite'
-                        },
-                        component: () => import('../views/Welcome.vue'),
-                        children: [
-                            {
-                                name: 'elplus',
-                                path: 'elplus', //子路由共用父路由路径，不要叫‘/’
-                                meta: {
-                                    title: 'elplus'
-                                },
-                                component: () => import('../views/Welcome.vue'),
+                component: () => import('../views/User.vue'),
 
-                            }
-                        ]
-                    }
-                ]
             }
         ]
 

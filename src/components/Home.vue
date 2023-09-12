@@ -16,7 +16,7 @@ export default {
       return this.$store.state.userInfo;
     },
     activeMenu() {
-      return location.hash.slice(-1);
+      return location.hash.slice(1);
     }
   },
   mounted() {
@@ -44,7 +44,7 @@ export default {
     },
     async getMenuList() {
       try {
-        const userMenu = await this.$api.menuList();
+        const userMenu = await this.$api.getmenuList();
         this.userMenu = userMenu;
         console.log(userMenu);
       }
@@ -201,7 +201,6 @@ export default {
       background-color: #eef0f3;
 
       .main-page {
-        background-color: #fff;
         height: calc(100vh - 90px); //怪异盒模型 height已经包含了自身的padding，boder
       }
     }

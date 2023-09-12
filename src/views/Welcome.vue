@@ -23,6 +23,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #fff;
+
 
   .content-wrapper {
     position: relative;

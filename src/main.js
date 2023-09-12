@@ -19,6 +19,7 @@ app.config.globalProperties.$request = request;
 app.config.globalProperties.$storage = storage;
 // 将router对象挂载到vue实例身上
 app.config.globalProperties.$api = api;
+app.provide('$api', api);
 
 // 注册el-icon  key,component => iconName及其对应的组件
 // Object.entries(): Returns an array of key / values of the enumerable properties of an object
@@ -30,7 +31,6 @@ for (const iconName in ElementPlusIconsVue) {
     app.component(iconName, ElementPlusIconsVue[iconName]);
 }
 
-app.use(router).use(ElementPlus).use(store).mount('#app');
-
+app.use(router).use(ElementPlus,).use(store).mount('#app');
 
 

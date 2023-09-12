@@ -38,13 +38,13 @@ service.interceptors.response.use((res) => {
     const { code, data, msg } = res.data;//res.data是返回的json对象
     if (code === 200) {
         return data;
-    } else if (code === 40001) {
+    } else if (code === 5001) {
         // 页面弹窗，提示用户错误信息
         ElMessage.error(TOKEN_INVALID);
         setTimeout(() => {
             // 跳转到登录组件
             router.push('/login');
-        }, 15000);
+        }, 1500);
         return Promise.reject(TOKEN_INVALID);
     } else {
         ElMessage.error(msg || NTEWORK_ERROR);
@@ -61,8 +61,10 @@ function request(options) {
     }
 
     // 局部mock设置
+    let isMock = config.mock;
+    // 如果设置局部mock, isMock值为局部；否则为全局mock
     if (typeof options.mock != 'undefined') {
-        config.mock = options.mock;
+        isMock = options.mock;
     }
     // 项目上线时
     if (config.env === 'prod') {
@@ -70,7 +72,7 @@ function request(options) {
         service.defaults.baseURL = config.baseApi;
     } else {
         // service.defaults 自定义axios实例默认值
-        service.defaults.baseURL = config.mock ? config.mockApi : config.baseApi;
+        service.defaults.baseURL = isMock ? config.mockApi : config.baseApi;
     }
 
     return service(options);
