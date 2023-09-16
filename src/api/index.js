@@ -21,15 +21,11 @@ export default {
             mock: true
         });
     },
-    getmenuList() {
+    getMenuList(params) {
         return request({
             method: 'post',
             url: '/menu/list',
-            data: {
-                // menuName: "系统管理",
-                // menuState: 1
-            },
-            mock: true
+            data: params,
         });
     },
     getUserList(params) {
@@ -69,4 +65,11 @@ export default {
             data: params,
         });
     },
+    submitMenu(params) {
+        return request({
+            method: 'post',
+            url: '/menu/operate',
+            data: params,
+        });
+    }
 };

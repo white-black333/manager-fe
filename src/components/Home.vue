@@ -44,7 +44,7 @@ export default {
     },
     async getMenuList() {
       try {
-        const userMenu = await this.$api.getmenuList();
+        const userMenu = await this.$api.getMenuList();
         this.userMenu = userMenu;
         console.log(userMenu);
       }

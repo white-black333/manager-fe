@@ -165,7 +165,7 @@ export default {
       dialogVisible.value = false;
     };
     const handleEdit = (row) => {
-      console.log(row);
+      // console.log(row);
       action.value = 'edit';
       dialogVisible.value = true;
       //  nextTick 是将回调推迟到下一个 DOM 更新周期之后执行。在更改了一些数据以等待 DOM 更新后立即使用它;
@@ -250,7 +250,7 @@ export default {
         <el-table-column type="selection" width="55" />
         <el-table-column v-for="{ prop, label, formatter } in userColums" :key="prop" :prop="prop" :label="label"
           :formatter="formatter" />
-        <el-table-column fixed="right" label="Operations" width="150">
+        <el-table-column fixed="right" label="操作" width="150">
           <template #default="scope"> <!-- 插槽 -->
             <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
