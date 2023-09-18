@@ -54,7 +54,7 @@ export default {
     const formRef = ref();
     const tableRef = ref();
     // 新增表单控件本身ref
-    const ruleFormRef = ref();
+    const dialogForm = ref();
     const checkedUserIds = ref();
     // 弹窗显示控制值
     const dialogVisible = ref(false);
@@ -144,7 +144,7 @@ export default {
       action.value = 'add';
       dialogVisible.value = true;
     };
-    // 提交表单  formEl指 ruleFormRef表单
+    // 提交表单  formEl指 dialogForm表单
     const submitForm = async (formEl) => {
       await formEl.validate(async (valid, fields) => {
         if (valid) {
@@ -178,7 +178,7 @@ export default {
     onMounted(async () => {
       getUserList();
       // 初始化或者打开弹窗时调接口拿数据;
-      roleList.value = await api.getRoleList();
+      roleList.value = await api.getRoleAllList();
       deptList.value = await api.getDeptList();
     });
 
@@ -194,7 +194,7 @@ export default {
       createdUser,
       cascaderProps,
       rules,
-      ruleFormRef,
+      dialogForm,
       roleList,
       deptList,
       action,
@@ -260,8 +260,8 @@ export default {
       <el-pagination class="pagination" small background layout="prev, pager, next" :page-size="pager.pageSize"
         :total="pager.total * 1" @current-change="handleCurrentChange" />
     </div>
-    <el-dialog v-model="dialogVisible" title="新增用户" width="30%" @close="ruleFormRef.resetFields()">
-      <el-form ref="ruleFormRef" :model="createdUser" label-width="100px" :rules="rules" status-icon>
+    <el-dialog v-model="dialogVisible" title="新增用户" width="30%" @close="dialogForm.resetFields()">
+      <el-form ref="dialogForm" :model="createdUser" label-width="100px" :rules="rules" status-icon>
         <el-form-item label="用户名" prop="userName">
           <el-input v-model="createdUser.userName" :disabled="action == 'edit'" placeholder="请输入用户名称" />
         </el-form-item>
@@ -295,8 +295,8 @@ export default {
       </el-form>
       <template #footer>
         <span>
-          <el-button @click="resetForm(ruleFormRef)">取消</el-button>
-          <el-button type="primary" @click="submitForm(ruleFormRef)"> 确定 </el-button>
+          <el-button @click="resetForm(dialogForm)">取消</el-button>
+          <el-button type="primary" @click="submitForm(dialogForm)"> 确定 </el-button>
         </span>
       </template>
     </el-dialog>

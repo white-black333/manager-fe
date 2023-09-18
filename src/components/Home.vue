@@ -46,7 +46,6 @@ export default {
       try {
         const userMenu = await this.$api.getMenuList();
         this.userMenu = userMenu;
-        console.log(userMenu);
       }
       catch (error) { console.error(error); }
     },

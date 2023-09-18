@@ -21,13 +21,6 @@ export default {
             mock: true
         });
     },
-    getMenuList(params) {
-        return request({
-            method: 'post',
-            url: '/menu/list',
-            data: params,
-        });
-    },
     getUserList(params) {
         return request({
             method: 'get',
@@ -42,12 +35,53 @@ export default {
             data: params,
         });
     },
-    getRoleList(params) {
+    submitUser(params) {
+        return request({
+            method: 'post',
+            url: '/users/operate',
+            data: params,
+        });
+    },
+    getMenuList(params) {
+        return request({
+            method: 'post',
+            url: '/menu/list',
+            data: params,
+        });
+    },
+    submitMenu(params) {
+        return request({
+            method: 'post',
+            url: '/menu/operate',
+            data: params,
+        });
+    },
+    getRoleAllList(params) {
         return request({
             method: 'get',
             url: '/roles/allList',
             data: params,
-            mock: true
+        });
+    },
+    getRoleList(params) {
+        return request({
+            method: 'get',
+            url: '/roles/list',
+            data: params,
+        });
+    },
+    submitRole(params) {
+        return request({
+            method: 'post',
+            url: '/roles/operate',
+            data: params,
+        });
+    },
+    updatePermission(params) {
+        return request({
+            method: 'post',
+            url: '/roles/update/permission',
+            data: params,
         });
     },
     getDeptList(params) {
@@ -58,18 +92,4 @@ export default {
             mock: true
         });
     },
-    submitUser(params) {
-        return request({
-            method: 'post',
-            url: '/users/operate',
-            data: params,
-        });
-    },
-    submitMenu(params) {
-        return request({
-            method: 'post',
-            url: '/menu/operate',
-            data: params,
-        });
-    }
 };

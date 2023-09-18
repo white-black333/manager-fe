@@ -2,7 +2,7 @@
 import { ElMessage } from 'element-plus';
 import util from './../utils/util';
 export default {
-  name: 'User',
+  name: 'Menu',
   data() {
     return {
       // 菜单列表
@@ -100,33 +100,25 @@ export default {
     },
     // 确认 提交表单数据
     async submitForm(formName) {
-      const { action, createdMenu } = this;
-      const params = { action, ...createdMenu };
-      if (createdMenu.menuType == 2) {
-        const res = await this.$api.submitMenu(params);
-        this.dialogVisible = false;
-        this.$refs[formName].resetFields();
-        ElMessage.success("更新成功");
-        this.getMenuList();
-      } else {
-        this.$refs[formName].validate(async (valid, fileds) => {
-          if (valid) {
-            const res = await this.$api.submitMenu(params);
-            this.dialogVisible = false;
-            this.$refs[formName].resetFields();
-            ElMessage.success("更新成功");
-            this.getMenuList();
-          }
-        });
+      this.$refs[formName].validate(async (valid, fileds) => {
+        const { action, createdMenu } = this;
+        const params = { action, ...createdMenu };
+        if (valid) {
+          const res = await this.$api.submitMenu(params);
+          this.dialogVisible = false;
+          this.$refs[formName].resetFields();
+          ElMessage.success("更新成功");
+          this.getMenuList();
+        }
+      });
 
-      }
     }
   }
 };
 </script>
 
 <template>
-  <div class="user-wrapper">
+  <div class="menu-wrapper">
     <div class="query-form">
       <el-form ref="formRef" :inline="true" :model="menuQuery" class="demo-form-inline">
         <el-form-item label="菜单名称" prop="menuName">
@@ -163,8 +155,8 @@ export default {
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog v-model="dialogVisible" title="创建菜单" width="30%" @close="closeDialog('ruleFormRef')">
-      <el-form ref="ruleFormRef" :model="createdMenu" label-width="100px" :rules="rules">
+    <el-dialog v-model="dialogVisible" title="创建菜单" width="30%" @close="closeDialog('dialogForm')">
+      <el-form ref="dialogForm" :model="createdMenu" label-width="100px" :rules="rules">
         <el-form-item label="父级菜单" prop="parentId">
           <el-cascader v-model="createdMenu.parentId" :options="menuList"
             :props="{ value: '_id', label: 'menuName', checkStrictly: true }" placeholder="请选择父级菜单" style="width: 50%"
@@ -177,7 +169,7 @@ export default {
             <el-radio :label="2">按钮</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="菜单名称" prop="menuName" v-show="createdMenu.menuType == 1">
+        <el-form-item label="菜单名称" prop="menuName">
           <el-input v-model="createdMenu.menuName" placeholder="请输入菜单名称" />
         </el-form-item>
         <el-form-item label="菜单图标" prop="icon" v-show="createdMenu.menuType == 1">
@@ -201,8 +193,8 @@ export default {
       </el-form>
       <template #footer>
         <span>
-          <el-button @click="resetForm('ruleFormRef')">取消</el-button>
-          <el-button type="primary" @click="submitForm('ruleFormRef')"> 确定 </el-button>
+          <el-button @click="resetForm('dialogForm')">取消</el-button>
+          <el-button type="primary" @click="submitForm('dialogForm')"> 确定 </el-button>
         </span>
       </template>
     </el-dialog>
