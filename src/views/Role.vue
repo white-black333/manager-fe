@@ -8,7 +8,7 @@ export default {
       // 角色列表
       roleList: [],
       // 查询的条件
-      menuQuery: {},
+      roleQuery: {},
       // 弹出对话窗表单的数据
       createdRole: {},
       // 是否显示对话框
@@ -64,7 +64,7 @@ export default {
     async getRoleList() {
       try {
         const { list, page } = await this.$api.getRoleList({
-          ...this.menuQuery,
+          ...this.roleQuery,
           ...this.pager
         });
         this.pager.total = page.total;
@@ -76,7 +76,7 @@ export default {
     // 获取菜单列表
     async getMenuList() {
       const res = await this.$api.getMenuList();
-      console.log('res=>', res);
+      // console.log('res=>', res);
       this.menuList = res;
       this.getActionMap();
     },
@@ -95,7 +95,7 @@ export default {
       };
       deep(JSON.parse(JSON.stringify(this.menuList)));
       this.actionMap = actionMap;
-      console.log('actionMap=>', this.actionMap);
+      // console.log('actionMap=>', this.actionMap);
     },
     // 查询角色列表
     handleQuery() {
@@ -197,9 +197,9 @@ export default {
 <template>
   <div class="role-wrapper">
     <div class="query-form">
-      <el-form ref="formRef" :inline="true" :model="menuQuery" class="demo-form-inline">
+      <el-form ref="formRef" :inline="true" :model="roleQuery" class="demo-form-inline">
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="menuQuery.roleName" placeholder="请输入角色名称" clearable />
+          <el-input v-model="roleQuery.roleName" placeholder="请输入角色名称" clearable />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getRoleList">查询</el-button>

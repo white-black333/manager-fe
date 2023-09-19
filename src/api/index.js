@@ -28,6 +28,13 @@ export default {
             data: params,
         });
     },
+    getUserAllList(params) {
+        return request({
+            method: 'get',
+            url: '/users/all/list',
+            data: params,
+        });
+    },
     userDel(params) {
         return request({
             method: 'post',
@@ -89,7 +96,13 @@ export default {
             method: 'get',
             url: '/dept/list',
             data: params,
-            mock: true
+        });
+    },
+    submitDept(params) {
+        return request({
+            method: 'post',
+            url: '/dept/operate',
+            data: params,
         });
     },
 };
