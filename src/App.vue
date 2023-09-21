@@ -10,7 +10,7 @@ export default {
 </template>
 
 <style lang="scss">
-/* @import css 语法，引入类样式； import xxx from xx es6语法，引入模块 */
+/* style样式中引入  @import css 语法，引入类样式； js中引入 import xxx from xx es6语法，引入模块 */
 @import './assets/style/reset.css';
 @import './assets/style/index.scss';
 </style>

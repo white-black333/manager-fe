@@ -7,8 +7,8 @@ import mutations from './mutations';
 export default createStore({
     state: {
         userInfo: storage.getItem('userInfo') || {}, // 获取用户信息
-
-
+        userMenu: storage.getItem('userMenu') || [],
+        userAction: storage.getItem('userAction') || [],
     },
     mutations
 });

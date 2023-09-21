@@ -242,7 +242,7 @@ export default {
     </div>
     <div class="select-table">
       <div class="action">
-        <el-button type="primary" @click="handleCreate">新增</el-button>
+        <el-button type="primary" @click="handleCreate" v-has:add="'user-create'">新增</el-button>
         <el-button type="danger" @click="handleDeleteAll">删除</el-button>
       </div>
       <el-table ref="tableRef" :data="userList" stripe style="width: 100%" type='selection'

@@ -39,7 +39,7 @@ export default {
       // 表单验证规则
       rules: {
         menuName: [{ required: true, message: "请输入菜单名称", trigger: 'blur' },
-        { max: 8, min: 2, message: "长度在2-8个字符之间", trigger: 'blur' }]
+        { max: 10, min: 2, message: "长度在2-8个字符之间", trigger: 'blur' }]
       },
       // 操作类别 add,edit,delete
       action: ''
@@ -69,10 +69,13 @@ export default {
     handleAdd(type, value) {
       this.dialogVisible = true;
       this.action = 'add';
+      console.log('value._id=>', value._id);
+      console.log('value.parentId=>', value.parentId);
       if (type == 2) {
-        this.createdMenu.parentId = [...value.parentId, value._id].filter((item) => {
-          item;// 返回一个数组，其中只包括通过 item为True 的元素。 
-        });
+        this.createdMenu.parentId = [...value.parentId, value._id].filter((item) =>
+          item// 返回一个数组，其中只包括通过 item为True 的元素。 
+        );
+        console.log('this.createdMenu.parentId=>', this.createdMenu.parentId);
       }
     },
     // 编辑菜单方法

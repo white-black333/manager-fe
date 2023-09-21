@@ -23,7 +23,7 @@ export default {
             const list = value.halfCheckedKeys || [];
             list.map((item) => {
               if (item) {
-                arr.push(this.actionMap[item]);
+                arr.push(this.operateMap[item]);
               };
               //此时this指向表单的作用域
             });
@@ -51,7 +51,7 @@ export default {
       curRoleName: '',
       curRoleId: '',
       // 菜单映射表
-      actionMap: []
+      operateMap: []
     };
   },
   // 初始化
@@ -78,24 +78,24 @@ export default {
       const res = await this.$api.getMenuList();
       // console.log('res=>', res);
       this.menuList = res;
-      this.getActionMap();
+      this.getOperateMap();
     },
     // 递归遍历获取 菜单id与菜单名称对应值
-    getActionMap() {
-      const actionMap = {};
+    getOperateMap() {
+      const operateMap = {};
       const deep = (list) => {
         while (list.length) {
           const item = list.pop();
-          if (item.children && item.action) {//筛选 有按钮的二级菜单
-            actionMap[item._id] = item.menuName;
-          } else if (item.children && !item.action) {//筛选 有二级菜单的一级菜单
+          if (item.children && item.operate) {//筛选 有按钮的二级菜单
+            operateMap[item._id] = item.menuName;
+          } else if (item.children && !item.operate) {//筛选 有二级菜单的一级菜单
             deep(item.children);
           }
         }
       };
       deep(JSON.parse(JSON.stringify(this.menuList)));
-      this.actionMap = actionMap;
-      // console.log('actionMap=>', this.actionMap);
+      this.operateMap = operateMap;
+      // console.log('operateMap=>', this.operateMap);
     },
     // 查询角色列表
     handleQuery() {

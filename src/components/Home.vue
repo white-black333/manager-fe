@@ -44,8 +44,11 @@ export default {
     },
     async getMenuList() {
       try {
-        const userMenu = await this.$api.getMenuList();
-        this.userMenu = userMenu;
+        // 根据用户角色拉取对应的权限菜单
+        const { treeList, operateMap } = await this.$api.getPermissionList();
+        this.$store.commit('saveUserMenu', treeList);
+        this.$store.commit('saveUserAction', operateMap);
+        this.userMenu = treeList;
       }
       catch (error) { console.error(error); }
     },

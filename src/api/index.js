@@ -28,6 +28,13 @@ export default {
             data: params,
         });
     },
+    getPermissionList() {
+        return request({
+            method: 'get',
+            url: '/users/getPermissionList',
+            data: {},
+        });
+    },
     getUserAllList(params) {
         return request({
             method: 'get',

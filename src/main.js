@@ -10,8 +10,25 @@ import api from './api';
 import store from './store';
 
 // console.log('环境变量', process.env);//使用vite创建vue项目，process.env已经被移除了
-console.log('环境变量', import.meta.env); //vite配置中环境变量的位置
+// console.log('环境变量', import.meta.env); //vite配置中环境变量的位置
 const app = createApp(App);
+
+// 注册全局指令
+app.directive('has', {
+    beforeMount: (el, binding) => {
+        console.log(el, binding);
+        const operateMap = storage.getItem('userAction');
+        const hasPermission = operateMap.includes(binding.value);
+        if (!hasPermission) {
+            el.style = 'display:none';//设置display:none之后依然可以在浏览器页面勾选style
+            // 直接删除该节点
+            setTimeout(() => {//beforeMount无法操作DOM，创建宏任务，下次事件循环时再执行。
+                el.parentNode.removeChild(el);
+            });
+        }
+    }
+});
+
 
 // 给globalProperties添加对象，即将request添加到全局vue实例身上
 app.config.globalProperties.$request = request;
