@@ -2,6 +2,7 @@
 import { createStore } from 'vuex';
 import storage from '../utils/storage';
 import mutations from './mutations';
+import actions from './actions';
 
 
 export default createStore({
@@ -9,6 +10,8 @@ export default createStore({
         userInfo: storage.getItem('userInfo') || {}, // 获取用户信息
         userMenu: storage.getItem('userMenu') || [],
         userAction: storage.getItem('userAction') || [],
+        addRoutes: []
     },
-    mutations
+    mutations,
+    actions
 });

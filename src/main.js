@@ -16,7 +16,7 @@ const app = createApp(App);
 // 注册全局指令
 app.directive('has', {
     beforeMount: (el, binding) => {
-        console.log(el, binding);
+        // console.log(el, binding);
         const operateMap = storage.getItem('userAction');
         const hasPermission = operateMap.includes(binding.value);
         if (!hasPermission) {

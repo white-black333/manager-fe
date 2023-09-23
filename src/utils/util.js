@@ -28,6 +28,30 @@ export default {
             }
         }
         return fmt;
+    },
+    generateRoutes(list) {
+        const routes = [];
+        const deep = (list) => {
+            while (list.length) {
+                const item = list.pop();
+                if (item.children && item.operate) {//筛选 有按钮的二级菜单
+                    routes.push({
+                        name: item.component,
+                        path: item.path,
+                        meta: {
+                            title: item.menuName
+                        },
+                        component: item.component
+                        // component: () => import('../views/Login.vue'),//异步懒加载不在业务逻辑中实现
+                    });
+                } else if (item.children && !item.operate) {//筛选 有二级菜单的一级菜单
+                    deep(item.children);
+                }
+            }
+        };
+        deep(JSON.parse(JSON.stringify(list)));
+        // console.log('routes=>', routes);
+        return routes;
     }
 };
 // obj.dataFormater("2024-01-17T13:32:06.381Z");

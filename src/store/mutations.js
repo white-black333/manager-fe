@@ -1,6 +1,7 @@
 /* mutations业务层数据提交 */
 
 import storage from "../utils/storage";
+import router from './../router';
 
 export default {
     saveUserInfo(state, userInfo) {
@@ -15,4 +16,7 @@ export default {
         state.userAction = userAction;
         storage.setItem('userAction', userAction);
     },
+    SET_ROUTERS(state) {
+        state.addRoutes = router.getRoutes();
+    }
 };

@@ -112,4 +112,18 @@ export default {
             data: params,
         });
     },
+    getApplyList(params) {
+        return request({
+            method: 'get',
+            url: '/leave/list',
+            data: params,
+        });
+    },
+    submitApply(params) {
+        return request({
+            method: 'post',
+            url: '/leave/operate',
+            data: params,
+        });
+    },
 };
