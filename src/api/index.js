@@ -18,7 +18,6 @@ export default {
             method: 'get',
             url: '/leave/count',
             data: {},
-            mock: true
         });
     },
     getUserList(params) {
@@ -123,6 +122,13 @@ export default {
         return request({
             method: 'post',
             url: '/leave/operate',
+            data: params,
+        });
+    },
+    submitApprove(params) {
+        return request({
+            method: 'post',
+            url: '/leave/approve',
             data: params,
         });
     },

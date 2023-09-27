@@ -7,7 +7,6 @@ export default {
   data() {
     return {
       isCollapse: false,
-      noticeCount: false,
       userMenu: [],
     };
   },
@@ -17,6 +16,9 @@ export default {
     },
     activeMenu() {
       return location.hash.slice(1);
+    },
+    noticeCount() {
+      return this.$store.state.noticeCount;
     }
   },
   mounted() {
@@ -38,7 +40,7 @@ export default {
     async getNoticeCount() {
       try {
         const count = await this.$api.noticeCount();
-        this.noticeCount = !!count;
+        this.$store.commit('saveNoticeCount', count);
       }
       catch (error) { console.error(error); }
     },
@@ -52,6 +54,11 @@ export default {
       }
       catch (error) { console.error(error); }
     },
+    pushApprove() {
+      if (this.$store.state.noticeCount) {
+        this.$router.push('/leave/approve');
+      }
+    }
   }
 
 
@@ -79,7 +86,7 @@ export default {
           <BreadCrumb />
         </div>
         <div class="userInfo">
-          <el-badge class="notice" :is-dot="noticeCount">
+          <el-badge class="notice" :is-dot="noticeCount" @click="pushApprove">
             <el-icon class="notice-icon">
               <Bell />
             </el-icon>
@@ -172,7 +179,7 @@ export default {
           /* height设置元素自身的高度，line-height设置子元素的高度 */
           line-height: 30px; //line-height指定匿名行内框的最小高度
           margin-right: 15px;
-          ;
+          cursor: pointer;
         }
 
         .dropdown {

@@ -1,9 +1,10 @@
 <script >
 import { ElMessage } from 'element-plus';
-import { ref, inject, onMounted, reactive, toRaw } from 'vue';
+import { ref, inject, onMounted, reactive, toRaw, } from 'vue';
+import { useStore } from 'vuex';
 import util from './../utils/util';
 export default {
-  name: 'Apply',
+  name: 'Approve',
   setup() {
     const api = inject('$api');//vue3 没有this,通过祖孙间通信传递数据 
     // apply为表单查询条件
@@ -23,6 +24,7 @@ export default {
     // 申请列表的表头字段
     const applyColums = reactive([
       { prop: 'orderNo', label: '单号' },
+      { prop: 'applyUser.userName', label: '申请人' },
       {
         label: '休假时间', formatter(row, column, value) {
           return (util.dataFormater(new Date(row.startTime), "yyyy-MM-dd")
@@ -60,24 +62,20 @@ export default {
     const formRef = ref();
     const tableRef = ref();
     // 新增表单控件本身ref
-    const dialogForm = ref();
+    const auditFormRef = ref();
+    const auditForm = ref();
+    const applyId = ref();
     // 弹窗显示控制值
     const dialogVisible = ref(false);
     // 新增表单规则对象
     const rules = {
-      applyType: [{ required: true, message: '请输入休假类型', trigger: 'change' }],
-      startTime: [{ required: true, message: '请选择开始时间', trigger: 'change' }],
-      endTime: [{ required: true, message: '请选择结束时间', trigger: 'change' }],
-      reasons: [{ required: true, message: '请输入休假原因', trigger: ['change', 'blur'] }],
+      remark: [{ required: true, message: '请输入审核备注', trigger: 'blur' }],
     };
-    const action = ref('create');
-    const setpVisible = ref(false);
-    const stepNo = ref(0);
-    const stepColums = ref();
+    const userInfo = useStore().state.userInfo;
     // 发请求获取申请数据  getApplyList([option,])  返回一个对象 { page, list } 
     const getApplyList = async () => {
       try {
-        const { page, list } = await api.getApplyList({ ...applyQuery, ...pager });
+        const { page, list } = await api.getApplyList({ ...applyQuery, ...pager, type: 'approve' });
         applyList.value = list;
         pager.total = page.total;
       }
@@ -96,34 +94,10 @@ export default {
       pager.pageNum = val;
       getApplyList();
     };
-    // 提交表单  formEl指 dialogForm表单
-    const submitForm = async (formEl) => {
-      await formEl.validate(async (valid, fields) => {
-        if (valid) {
-          const params = toRaw(createdApply);
-          params.action = action.value;
-          const res = await api.submitApply(params);
-          formEl.resetFields();
-          getApplyList();
-          dialogVisible.value = false;
-          ElMessage.success("申请创建成功");
-        }
-      });
-    };
-    // 重置表单
-    const resetForm = (formEl) => {
-      formEl.resetFields();
-      dialogVisible.value = false;
-    };
-    const handleApply = () => {
-      action.value = 'create';
+    const handleApprove = (row) => {
       dialogVisible.value = true;
-    };
-    const handleEdit = (row) => {
-      action.value = 'edit';
-      setpVisible.value = true;
-      stepNo.value = row.applyState > 2 ? 3 : row.applyState;
-      stepColums.value = [
+      auditForm.value = [
+        { prop: 'applyUser', label: '申请人', value: row.applyUser.userName },
         {
           prop: 'applyType', label: '休假类型', value: { 1: '事假', 2: '调休', 3: '年假' }[row.applyType]
         },
@@ -135,25 +109,24 @@ export default {
         { prop: 'reasons', label: '休假原因', value: row.reasons },
         { prop: 'applyState', label: '审批状态', value: { 1: "待审批", 2: "审批中", 3: "审批拒绝", 4: "审批通过", 5: "作废" }[row.applyState] },
         { prop: 'curAuditUserName', label: '审批人', value: row.curAuditUserName },
+        { prop: 'remark', label: '备注', value: '' },
       ];
+      applyId.value = row._id;
     };
-    const handleDelete = async (_id) => {
-      const params = { _id, action: "delete" };
-      const res = await api.submitApply(params);
-      ElMessage.success("删除成功");
-      getApplyList();
+    // 提交表单  formEl指 auditFormRef表单
+    const submitApprove = (formEl, action) => {
+      formEl.validate(async (valid, fields) => {
+        if (valid) {
+          const params = { _id: applyId.value, remark: auditForm.value.remark, action };
+          const res = api.submitApprove(params);
+          ElMessage.success("处理成功");
+          formEl.resetFields();
+          dialogVisible.value = false;
+          getApplyList();
+          useStore().commit('saveNoticeCount', useStore().state.noticeCount - 1);
+        }
+      });
     };
-    const handleDateChange = () => {
-      const { startTime, endTime } = createdApply;
-      if (!startTime || !endTime) return;
-      if (startTime > endTime) {
-        ElMessage.error('结束时间不能早于开始时间');
-        createdApply.endTime = "";
-      } else {
-        createdApply.leaveTime = (((endTime - startTime) / (24 * 60 * 60 * 1000)) + 1) + "天";
-      }
-    };
-
     // 初始化时，获取所有的申请数据
     onMounted(async () => {
       getApplyList();
@@ -168,23 +141,17 @@ export default {
       formRef,
       tableRef,
       dialogVisible,
-      setpVisible,
       createdApply,
       rules,
-      dialogForm,
-      action,
-      stepNo,
-      stepColums,
+      auditFormRef,
+      auditForm,
+      userInfo,
       getApplyList,
       handleQuery,
       handleReset,
       handleCurrentChange,
-      resetForm,
-      submitForm,
-      handleDelete,
-      handleEdit,
-      handleApply,
-      handleDateChange
+      handleApprove,
+      submitApprove,
     };
   }
 };
@@ -196,7 +163,7 @@ export default {
       <el-form ref="formRef" :inline="true" :model="applyQuery" class="demo-form-inline">
         <el-form-item label="审批状态" prop="applyState">
           <el-select v-model="applyQuery.applyState" clearable>
-            <el-option label="全部" :value="''" />
+            <el-option label="全部" value="" />
             <el-option label="待审批" :value="1" />
             <el-option label="审批中" :value="2" />
             <el-option label="审批拒绝" :value="3" />
@@ -213,80 +180,35 @@ export default {
       </el-form>
     </div>
     <div class="select-table">
-      <div class="action">
-        <el-button type="primary" @click="handleApply">申请休假</el-button>
-      </div>
       <el-table ref="tableRef" :data="applyList" stripe style="width: 100%">
         <el-table-column v-for="{ prop, label, formatter } in applyColums" :key="prop" :prop="prop" :label="label"
           :formatter="formatter" />
-        <el-table-column fixed="right" label="操作" width="150">
+        <el-table-column fixed="right" label="操作" width="80">
           <template #default="scope"> <!-- 插槽 -->
-            <el-button size="small" @click="handleEdit(scope.row)">查看</el-button>
-            <el-button type="danger" size="small" @click="handleDelete(scope.row._id)"
-              v-if="[1, 2].includes(scope.row.applyState)">作废</el-button>
+            <el-button size="small" @click="handleApprove(scope.row)"
+              v-if="scope.row.curAuditUserName == userInfo.userName && [1, 2].includes(scope.row.applyState)">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination class="pagination" small background layout="prev, pager, next" :page-size="pager.pageSize"
         :total="pager.total * 1" @current-change="handleCurrentChange" />
     </div>
-    <el-dialog v-model="dialogVisible" title="休假申请" @close="dialogForm.resetFields()">
-      <el-form ref="dialogForm" :model="createdApply" label-width="100px" :rules="rules" status-icon>
-        <el-form-item label="休假类型" prop="applyType">
-          <el-select v-model="createdApply.applyType" placeholder="请选择休假类型">
-            <el-option label="事假" :value="1" />
-            <el-option label="调休" :value="2" />
-            <el-option label="年假" :value="3" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="休假时间" required>
-          <el-row>
-            <el-col :span="10">
-              <el-form-item prop="startTime">
-                <el-date-picker type="date" v-model="createdApply.startTime" placeholder="请选择开始日期"
-                  @change="handleDateChange" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="1">-</el-col>
-            <el-col :span="10">
-              <el-form-item prop="endTime">
-                <el-date-picker type="date" v-model="createdApply.endTime" placeholder="请选择结束日期"
-                  @change="handleDateChange" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item label="休假时长" prop="leaveTime">
-          {{ createdApply.leaveTime }}
-        </el-form-item>
-        <el-form-item label="休假原因" prop="reasons">
-          <el-input type="textarea" :row="3" v-model="createdApply.reasons" placeholder="请输入休假原因" />
+    <el-dialog v-model="dialogVisible" title="审核" destroy-on-close>
+      <el-form ref="auditFormRef" :model="auditForm" label-width="120px" label-suffix=":" :rules="rules">
+        <el-form-item v-for="{ prop, label, value } in auditForm" :key="prop" :label="label" :prop="`${prop}`">
+          <el-input v-if="prop == 'remark'" type="textarea" :rows="3" placeholder="请输入审核备注"
+            v-model="auditForm[`${prop}`]" />
+          <span v-else>{{ value }}</span>
         </el-form-item>
       </el-form>
       <template #footer>
         <span>
-          <el-button @click="resetForm(dialogForm)">取消</el-button>
-          <el-button type="primary" @click="submitForm(dialogForm)"> 确定 </el-button>
+          <el-button @click="submitApprove(auditFormRef, 'pass')">审核通过</el-button>
+          <el-button @click="submitApprove(auditFormRef, 'reject')">驳回</el-button>
         </span>
       </template>
     </el-dialog>
-    <el-dialog v-model="setpVisible" ref="stepForm" title="申请休假" destroy-on-close>
-      <el-steps :active="stepNo" align-center>
-        <el-step title="待审批" />
-        <el-step title="审批中" />
-        <el-step title="审批通过/拒绝" />
-      </el-steps>
-      <el-form label-width="120px" label-suffix=":">
-        <el-form-item v-for="{ prop, label, value } in stepColums" :key="prop" :label="label">{{
-          value }}
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span>
-          <el-button @click="setpVisible = !setpVisible">关闭</el-button>
-        </span>
-      </template>
-    </el-dialog>
+
   </div>
 </template>
 

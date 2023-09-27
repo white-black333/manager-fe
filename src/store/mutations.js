@@ -18,5 +18,9 @@ export default {
     },
     SET_ROUTERS(state) {
         state.addRoutes = router.getRoutes();
+    },
+    saveNoticeCount(state, noticeCount) {
+        state.noticeCount = noticeCount;
+        storage.setItem('noticeCount', noticeCount);
     }
 };

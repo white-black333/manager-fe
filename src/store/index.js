@@ -10,7 +10,8 @@ export default createStore({
         userInfo: storage.getItem('userInfo') || {}, // 获取用户信息
         userMenu: storage.getItem('userMenu') || [],
         userAction: storage.getItem('userAction') || [],
-        addRoutes: []
+        addRoutes: [],
+        noticeCount: 0
     },
     mutations,
     actions
